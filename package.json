@@ -2,7 +2,7 @@
 	"name": "@rbxts/hot-reloader",
 	"version": "0.0.1",
 	"description": "",
-	"main": "out/init.lua",
+	"main": "src/init.lua",
 	"scripts": {
 		"build": "rbxtsc",
 		"watch": "rbxtsc -w",
@@ -23,8 +23,8 @@
 		"url": "https://github.com/mathfox/rbx-hot-reloader/issues"
 	},
 	"homepage": "https://github.com/mathfox/rbx-hot-reloader#readme",
-	"types": "out/index.d.ts",
-	"files": ["out", "!**/*.tsbuildinfo"],
+	"types": "src/index.d.ts",
+	"files": ["src"],
 	"publishConfig": {
 		"access": "public"
 	},
