@@ -1,0 +1,39 @@
+{
+	"name": "@rbxts/hot-reloader",
+	"version": "0.0.1",
+	"description": "",
+	"main": "out/init.lua",
+	"scripts": {
+		"build": "rbxtsc",
+		"watch": "rbxtsc -w",
+		"prepublishOnly": "npm run build",
+		"fmt": "bunx @biomejs/biome check --write"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mathfox/rbx-hot-reloader.git"
+	},
+	"keywords": ["hot-reload", "reload"],
+	"author": {
+		"name": "Ivan Leontev",
+		"url": "https://github.com/mathfox"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/mathfox/rbx-hot-reloader/issues"
+	},
+	"homepage": "https://github.com/mathfox/rbx-hot-reloader#readme",
+	"types": "out/index.d.ts",
+	"files": ["out", "!**/*.tsbuildinfo"],
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@rbxts/compiler-types": "^2.3.0-types.1",
+		"@rbxts/types": "1.0.788"
+	},
+	"devDependencies": {
+		"roblox-ts": "^2.3.0-dev-8137656",
+		"typescript": "5.5.3"
+	}
+}
