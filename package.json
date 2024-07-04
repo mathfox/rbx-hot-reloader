@@ -4,9 +4,6 @@
 	"description": "",
 	"main": "src/init.lua",
 	"scripts": {
-		"build": "rbxtsc",
-		"watch": "rbxtsc -w",
-		"prepublishOnly": "npm run build",
 		"fmt": "bunx @biomejs/biome check --write"
 	},
 	"repository": {
