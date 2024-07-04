@@ -1,6 +1,6 @@
 {
-	"name": "matter-sync",
+	"name": "hot-reloader",
 	"tree": {
-		"$path": "out"
+		"$path": "src"
 	}
 }
