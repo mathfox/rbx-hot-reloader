@@ -32,7 +32,7 @@ export declare class HotReloader {
 	): CleanupFunction
 
     scan(
-		container: ModuleScript,
+		container: Instance,
 		callback: (newModule: ModuleScript, context: Context) => void,
 		cleanup: (previousModule: ModuleScript, context: Context) => void,
 	): CleanupFunction
