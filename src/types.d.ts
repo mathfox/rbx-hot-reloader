@@ -1,25 +1,25 @@
-export type Context = {
+export interface Context {
 	originalModule: ModuleScript;
 	isReloading: boolean;
-};
+}
 
-export type ConfigurationProps = {
+export interface ConfigurationProps {
 	clonedModuleTagName: string;
-    printFunction: (message: string) => void;
-};
+	printFunction: (message: string) => void;
+}
 
 export declare class Configuration {
-    static is: (value: unknown) => value is Configuration
+	static is: (value: unknown) => value is Configuration;
 
 	props: ConfigurationProps;
 }
 
-export type CleanupFunction = () => void
+export type CleanupFunction = () => void;
 
 export declare class HotReloader {
-    static is: (value: unknown) => value is HotReloader
+	static is: (value: unknown) => value is HotReloader;
 
-    _configuration: Configuration;
+	_configuration: Configuration;
 
 	_listeners: Array<RBXScriptConnection>;
 
@@ -29,11 +29,11 @@ export declare class HotReloader {
 		module: ModuleScript,
 		callback: (newModule: ModuleScript, context: Context) => void,
 		cleanup: (previousModule: ModuleScript, context: Context) => void,
-	): CleanupFunction
+	): CleanupFunction;
 
-    scan(
+	scan(
 		container: Instance,
 		callback: (newModule: ModuleScript, context: Context) => void,
 		cleanup: (previousModule: ModuleScript, context: Context) => void,
-	): CleanupFunction
+	): CleanupFunction;
 }
