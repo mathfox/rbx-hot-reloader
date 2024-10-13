@@ -1,5 +1,5 @@
 import type { Configuration } from "./Configuration";
-import type { Context, CleanupFunction } from "./types";
+import type { CleanupFunction, Context } from "./types";
 
 export declare class HotReloader {
 	constructor(configuration?: Configuration);
