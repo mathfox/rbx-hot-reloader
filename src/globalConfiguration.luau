@@ -5,8 +5,7 @@
 local Configuration = require(script.Parent.Configuration)
 
 local globalConfiguration = Configuration.new({
-	clonedModuleTagName = "HotReloaderClonedModule",
-	--printFunction = print,
+	clonedModuleTagName = "HotReloadModule",
 })
 
 local function getGlobalConfiguration(): Configuration.Configuration

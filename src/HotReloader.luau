@@ -42,7 +42,7 @@ export type HotReloaderProperties = {
 
 export type HotReloader = typeof(setmetatable({} :: HotReloaderProperties, (nil :: any) :: HotReloaderImpl))
 
-local CLONED_MODULE_TAG_NAME = "__HotReloaderClonedModule"
+local CLONED_MODULE_TAG_NAME = "__HOT_RELOAD_MODULE"
 
 local HotReloader = {} :: HotReloaderImpl
 HotReloader.__index = HotReloader

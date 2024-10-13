@@ -13,12 +13,11 @@ export type ConfigurationImpl = {
 	is: (value: any) -> boolean,
 }
 
-export type Configuration = typeof(setmetatable(
-	{} :: {
-		props: ConfigurationProps,
-	},
-	(nil :: any) :: ConfigurationImpl
-))
+export type ConfigurationProperties = {
+	props: ConfigurationProps,
+}
+
+export type Configuration = typeof(setmetatable({} :: ConfigurationProperties, (nil :: any) :: ConfigurationImpl))
 
 local Configuration = {} :: ConfigurationImpl
 Configuration.__index = Configuration
