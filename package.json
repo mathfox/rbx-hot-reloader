@@ -9,7 +9,7 @@
 	"main": "src/init.luau",
 	"types": "src/index.d.ts",
 	"files": ["src"],
-	"keywords": ["roblox", "roblox-ts", "hot-reload", "reload"],
+	"keywords": ["roblox", "roblox-ts", "module", "hot-reload", "reload"],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/mathfox/rbx-hot-reloader.git"
@@ -28,8 +28,7 @@
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
-		"@rbxts/types": "^1.0.805",
-		"roblox-ts": "^3.0.0-dev-834585a",
-		"typescript": "^5.7.0-dev.20240914"
+		"@rbxts/types": "^1.0.811",
+		"typescript": "^5.6.3"
 	}
 }
