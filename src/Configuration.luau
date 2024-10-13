@@ -1,28 +1,40 @@
 --!strict
 --!native
+--!optimize 2
 
-local types = require(script.Parent.types)
+export type ConfigurationProps = {
+	clonedModuleTagName: string,
+}
 
-type ConfigurationPrototype = types.ConfigurationPrototype
-type ConfigurationProps = types.ConfigurationProps
-export type Configuration = types.Configuration
+export type ConfigurationImpl = {
+	__index: ConfigurationImpl,
 
-local Configuration = {}
-Configuration.prototype = {} :: ConfigurationPrototype
-Configuration.prototype.__index = Configuration.prototype
+	new: (props: ConfigurationProps) -> Configuration,
+	is: (value: any) -> boolean,
+}
 
-function Configuration.new(props: ConfigurationProps): Configuration
+export type Configuration = typeof(setmetatable(
+	{} :: {
+		props: ConfigurationProps,
+	},
+	(nil :: any) :: ConfigurationImpl
+))
+
+local Configuration = {} :: ConfigurationImpl
+Configuration.__index = Configuration
+
+function Configuration.new(props)
 	local clonedProps = table.clone(props)
 
-	local self = setmetatable({
+	local self: Configuration = setmetatable({
 		props = clonedProps,
-	}, Configuration.prototype)
+	}, Configuration)
 
 	return self
 end
 
 function Configuration.is(value)
-	return type(value) == "table" and getmetatable(value) == Configuration.prototype
+	return type(value) == "table" and getmetatable(value) == Configuration
 end
 
 return Configuration

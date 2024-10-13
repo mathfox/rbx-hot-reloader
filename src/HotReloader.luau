@@ -1,35 +1,67 @@
 --!strict
 --!native
+--!optimize 2
 
+local Configuration = require(script.Parent.Configuration)
 local globalConfiguration = require(script.Parent.globalConfiguration)
 local types = require(script.Parent.types)
 
-type HotReloaderPrototype = types.HotReloaderPrototype
-export type HotReloader = types.HotReloader
-type Configuration = types.Configuration
 type Context = types.Context
+
+export type HotReloaderImpl = {
+	__index: HotReloaderImpl,
+
+	new: (configuration: Configuration.Configuration?) -> HotReloader,
+	is: (value: any) -> boolean,
+
+	destroy: (self: HotReloader) -> (),
+
+	listen: (
+		self: HotReloader,
+		module: ModuleScript,
+		callback: (newModule: ModuleScript, context: Context) -> (),
+		cleanup: (previousModule: ModuleScript, context: Context) -> ()
+	) -> types.CleanupFunction,
+
+	scan: (
+		self: HotReloader,
+		container: Instance,
+		callback: (newModule: ModuleScript, context: Context) -> (),
+		cleanup: (previousModule: ModuleScript, context: Context) -> ()
+	) -> types.CleanupFunction,
+}
+
+export type HotReloaderProperties = {
+	_configuration: Configuration.Configuration,
+
+	_listeners: { [Instance]: RBXScriptConnection },
+
+	-- [OriginalModule]: ClonedModule
+	_clonedModules: { [ModuleScript]: ModuleScript },
+}
+
+export type HotReloader = typeof(setmetatable({} :: HotReloaderProperties, (nil :: any) :: HotReloaderImpl))
 
 local CLONED_MODULE_TAG_NAME = "__HotReloaderClonedModule"
 
-local HotReloader = {}
-HotReloader.prototype = {} :: HotReloaderPrototype
-HotReloader.prototype.__index = HotReloader.prototype
+local HotReloader = {} :: HotReloaderImpl
+HotReloader.__index = HotReloader
 
-function HotReloader.new(configuration: Configuration?): HotReloader
+function HotReloader.new(configuration)
 	local self = setmetatable({
 		_listeners = {},
 		_clonedModules = {},
-		_configuration = configuration or globalConfiguration,
-	}, HotReloader.prototype)
+		_configuration = configuration or globalConfiguration.getGlobalConfiguration(),
+	}, HotReloader)
 
 	return self
 end
 
 function HotReloader.is(value)
-	return type(value) == "table" and getmetatable(value) == HotReloader.prototype
+	return type(value) == "table" and getmetatable(value) == HotReloader
 end
 
-function HotReloader.prototype:destroy()
+function HotReloader:destroy()
 	for _, listener in self._listeners do
 		listener:Disconnect()
 	end
@@ -58,10 +90,10 @@ end
 	@param callback -- A callback that runs when the ModuleScript is added or changed
 	@param cleanup -- A callback that runs when the ModuleScript is changed or removed
 ]=]
-function HotReloader.prototype:listen(module, callback, cleanup)
+function HotReloader:listen(module, callback, cleanup)
 	local configuration = self._configuration
 
-	local moduleChangedConnection = module.Changed:Connect(function()
+	self._listeners[module] = module.Changed:Connect(function()
 		local originalStillExists = game:IsAncestorOf(module)
 
 		local cleanupContext = {
@@ -69,9 +101,11 @@ function HotReloader.prototype:listen(module, callback, cleanup)
 			originalModule = module,
 		}
 
-		if self._clonedModules[module] then
-			cleanup(self._clonedModules[module], cleanupContext)
-			self._clonedModules[module]:Destroy()
+		local previousModule = self._clonedModules[module]
+
+		if previousModule then
+			cleanup(previousModule, cleanupContext)
+			previousModule:Destroy()
 		else
 			cleanup(module, cleanupContext)
 		end
@@ -90,11 +124,7 @@ function HotReloader.prototype:listen(module, callback, cleanup)
 			originalModule = module,
 			isReloading = true,
 		})
-
-		configuration.props.printFunction(`HotReloaded {module:GetFullName()}!`)
 	end)
-
-	table.insert(self._listeners, moduleChangedConnection)
 
 	callback(module, {
 		originalModule = module,
@@ -102,12 +132,7 @@ function HotReloader.prototype:listen(module, callback, cleanup)
 	})
 
 	return function()
-		local index = table.find(self._listeners, moduleChangedConnection)
-		if not index then
-			return
-		end
-
-		table.remove(self._listeners, index)
+		self._listeners[module] = nil
 	end
 end
 
@@ -120,15 +145,11 @@ end
 	@param callback -- A callback that runs when the ModuleScript is added or changed
 	@param cleanup -- A callback that runs when the ModuleScript is changed or removed
 ]=]
-function HotReloader.prototype:scan(
-	container: Instance,
-	callback: (ModuleScript, Context) -> (),
-	cleanup: (ModuleScript, Context) -> ()
-)
+function HotReloader:scan(container, callback, cleanup)
 	local configuration = self._configuration
 	local listenCleanupFunctions = {}
 
-	local function add(module)
+	local function add(module: ModuleScript)
 		local cleanup = self:listen(module, callback, cleanup)
 
 		table.insert(listenCleanupFunctions, cleanup)
@@ -140,7 +161,7 @@ function HotReloader.prototype:scan(
 		end
 	end
 
-	local descendantAddedConnection = container.DescendantAdded:Connect(function(instance)
+	self._listeners[container] = container.DescendantAdded:Connect(function(instance)
 		if
 			instance:IsA("ModuleScript")
 			and not instance:HasTag(CLONED_MODULE_TAG_NAME)
@@ -150,15 +171,8 @@ function HotReloader.prototype:scan(
 		end
 	end)
 
-	table.insert(self._listeners, descendantAddedConnection)
-
 	return function()
-		local index = table.find(self._listeners, descendantAddedConnection)
-		if not index then
-			return
-		end
-
-		table.remove(self._listeners, index)
+		self._listeners[container] = nil
 
 		for _, cleanup in listenCleanupFunctions do
 			cleanup()
