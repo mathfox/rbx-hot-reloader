@@ -25,4 +25,4 @@ declare class HotReloader {
 	): CleanupFunction;
 }
 
-export = HotReloader
+export = HotReloader;

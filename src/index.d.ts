@@ -1,5 +1,5 @@
-import defineCleanupCallback from "./defineCleanupCallback";
 import HotReloader from "./HotReloader";
+import defineCleanupCallback from "./defineCleanupCallback";
 
 export { defineCleanupCallback };
 export * from "./Configuration";
