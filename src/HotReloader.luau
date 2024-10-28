@@ -4,9 +4,8 @@
 
 local Configuration = require(script.Parent.Configuration)
 local globalConfiguration = require(script.Parent.globalConfiguration)
+local moduleCleanupCallbacks = require(script.Parent.moduleCleanupCallbacks)
 local types = require(script.Parent.types)
-
-type Context = types.Context
 
 export type HotReloaderImpl = {
 	__index: HotReloaderImpl,
@@ -19,15 +18,15 @@ export type HotReloaderImpl = {
 	listen: (
 		self: HotReloader,
 		module: ModuleScript,
-		callback: (newModule: ModuleScript, context: Context) -> (),
-		cleanup: (previousModule: ModuleScript, context: Context) -> ()
+		callback: (newModule: ModuleScript, context: types.Context) -> (),
+		cleanup: (previousModule: ModuleScript, context: types.Context) -> ()
 	) -> types.CleanupFunction,
 
 	scan: (
 		self: HotReloader,
 		container: Instance,
-		callback: (newModule: ModuleScript, context: Context) -> (),
-		cleanup: (previousModule: ModuleScript, context: Context) -> ()
+		callback: (newModule: ModuleScript, context: types.Context) -> (),
+		cleanup: (previousModule: ModuleScript, context: types.Context) -> ()
 	) -> types.CleanupFunction,
 }
 
@@ -100,6 +99,15 @@ function HotReloader:listen(module, callback, cleanup)
 			isReloading = originalStillExists,
 			originalModule = module,
 		}
+
+		local moduleFullName = module:GetFullName()
+		local callbacks = moduleCleanupCallbacks[moduleFullName]
+		if callbacks then
+			for _, cleanupCallback in callbacks do
+				cleanupCallback()
+			end
+		end
+		moduleCleanupCallbacks[moduleFullName] = nil
 
 		local previousModule = self._clonedModules[module]
 

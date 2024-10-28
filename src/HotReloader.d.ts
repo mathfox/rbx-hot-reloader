@@ -1,7 +1,7 @@
 import type { Configuration } from "./Configuration";
 import type { CleanupFunction, Context } from "./types";
 
-export declare class HotReloader {
+declare class HotReloader {
 	constructor(configuration?: Configuration);
 
 	static is: (value: unknown) => value is HotReloader;
@@ -24,3 +24,5 @@ export declare class HotReloader {
 		cleanup: (previousModule: ModuleScript, context: Context) => void,
 	): CleanupFunction;
 }
+
+export = HotReloader

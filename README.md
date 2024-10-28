@@ -13,3 +13,13 @@ const module = ReplicatedStorage.SomeModule
 
 hotReloader.listen(module, (context) => {}, (context) => {})
 ```
+
+### Advanced usage
+
+```ts
+// assume that this is some module
+
+defineCleanupCallback(() => {
+    // do some stuff;
+})
+```

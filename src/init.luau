@@ -3,6 +3,7 @@
 --!optimize 2
 
 local Configuration = require(script.Configuration)
+local defineCleanupCallback = require(script.defineCleanupCallback)
 local globalConfiguration = require(script.globalConfiguration)
 local HotReloader = require(script.HotReloader)
 local types = require(script.types)
@@ -24,6 +25,7 @@ local exports = {
 
 	getGlobalConfiguration = globalConfiguration.getGlobalConfiguration,
 	setGlobalConfiguration = globalConfiguration.setGlobalConfiguration,
+	defineCleanupCallback = defineCleanupCallback,
 }
 
 return exports
