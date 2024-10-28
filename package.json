@@ -1,7 +1,7 @@
 {
 	"name": "@rbxts/hot-reloader",
-	"version": "0.2.0",
-	"description": "Modules hot reload solution",
+	"version": "0.3.0",
+	"description": "Modules hot reload solution for Roblox.",
 	"scripts": {
 		"check": "bunx @biomejs/biome check --write",
 		"prepublishOnly": "bun run check"
