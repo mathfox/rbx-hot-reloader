@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/hot-reloader",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "Modules hot reload solution for Roblox.",
 	"scripts": {
 		"check": "bunx @biomejs/biome check --write",
