@@ -91,6 +91,7 @@ end
 ]=]
 function HotReloader:listen(module, callback, cleanup)
 	local configuration = self._configuration
+	local moduleFullName = module:GetFullName()
 
 	self._listeners[module] = module.Changed:Connect(function()
 		local originalStillExists = game:IsAncestorOf(module)
@@ -100,7 +101,6 @@ function HotReloader:listen(module, callback, cleanup)
 			originalModule = module,
 		}
 
-		local moduleFullName = module:GetFullName()
 		local callbacks = moduleCleanupCallbacks[moduleFullName]
 		if callbacks then
 			for _, cleanupCallback in callbacks do
