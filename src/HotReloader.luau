@@ -104,7 +104,7 @@ function HotReloader:listen(module, callback, cleanup)
 		local callbacks = moduleCleanupCallbacks[moduleFullName]
 		if callbacks then
 			for _, cleanupCallback in callbacks do
-				cleanupCallback()
+				cleanupCallback(cleanupContext)
 			end
 		end
 		moduleCleanupCallbacks[moduleFullName] = nil
